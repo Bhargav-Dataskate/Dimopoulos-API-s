@@ -1,0 +1,4 @@
+%dw 2.0
+
+type auto_2bbfc799_31f7_4821_92c6_3c7dde3b5cf7_Input_Variables_executionId = String | Null
+

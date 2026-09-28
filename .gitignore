@@ -1,0 +1,31 @@
+# ---------------------------------------------------------------------------
+# Build output
+# ---------------------------------------------------------------------------
+target/
+*.jar
+
+# ---------------------------------------------------------------------------
+# Anypoint Studio / Eclipse local metadata
+# ---------------------------------------------------------------------------
+.mule/
+.metadata/
+.settings/
+.classpath
+.project
+.tooling/
+.tooling-apps-cache/
+*.log
+
+# ---------------------------------------------------------------------------
+# Live credentials - NEVER COMMIT
+#
+# Per-project property files carry plaintext Salesforce / SharePoint / Azure /
+# Anypoint IDP secrets (clientSecret, consumerSecret, callbackSecret, apiKey).
+# The redacted *.example.yaml templates ARE published so collaborators know
+# which keys to supply; copy one to the real filename and fill in the values,
+# or set them as CloudHub secured runtime properties.
+# ---------------------------------------------------------------------------
+dimo-*/src/main/resources/*.yaml
+dimo-*/src/main/resources/*.yml
+!dimo-*/src/main/resources/*.example.yaml
+!dimo-*/src/main/resources/*.example.yml

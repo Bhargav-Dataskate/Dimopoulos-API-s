@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:idp-poc-pharmacy-110="http://www.mulesoft.org/schema/mule/idp-poc-pharmacy-110"
+	xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce"
+	xmlns:validation="http://www.mulesoft.org/schema/mule/validation"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd
+http://www.mulesoft.org/schema/mule/idp-poc-pharmacy-110 http://www.mulesoft.org/schema/mule/idp-poc-pharmacy-110/current/mule-idp-poc-pharmacy-110.xsd">
+
+	<!--
+		Shared configuration for both listeners in this app. The app deploys every .xml
+		under src/main/mule as one application on one port, so /pharmacy (IDP extraction,
+		pharmacy-idp-extraction.xml) and /pharmacy/matter-document (post-review matter doc
+		creation, pharmacy-matter-document.xml) both reference the configs below by name.
+	-->
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="f2e1cb38-e0bd-4805-bfce-e7538efb5220" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<configuration-properties doc:name="Configuration properties" doc:id="e2feb0ca-7093-430d-9997-e8d4346b170f" file="config.yaml" />
+	<validation:config name="Validation_Config" doc:name="Validation Config" doc:id="dc21b47c-75e6-4b8a-b4c5-7065dde3f554" />
+	<salesforce:sfdc-config name="Salesforce_Config" doc:name="Salesforce Config" doc:id="19ae7acd-1c06-43d4-874d-0b8619a8ccc7" >
+		<salesforce:oauth-client-credentials-connection >
+			<salesforce:oauth-client-credentials clientId="${salesforce.clientId}" clientSecret="${salesforce.clientSecret}" tokenUrl="${salesforce.tokenUrl}"/>
+		</salesforce:oauth-client-credentials-connection>
+	</salesforce:sfdc-config>
+	<!--
+		Raw Salesforce REST, used only for the ContentVersion binary download - the
+		Salesforce connector has no file-download operation. Both listeners need it:
+		listener 1 to feed IDP, listener 2 to feed the SharePoint upload.
+	-->
+	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="0995ff6c-c556-4ee1-877c-1f5aee554b10" >
+		<http:request-connection protocol="HTTPS" host="${salesforce.host}" port="443"/>
+	</http:request-config>
+	<http:request-config name="HTTP_Request_configuration1" doc:name="HTTP Request configuration" doc:id="06998112-e05b-46cc-a079-a8cfb34d8447" >
+		<http:request-connection protocol="HTTPS" host="login.microsoftonline.com" />
+	</http:request-config>
+	<http:request-config name="HTTP_Request_configuration2" doc:name="HTTP Request configuration" doc:id="a8d796dc-9f86-4dd6-9bf4-03ab28ef8683" >
+		<http:request-connection protocol="HTTPS" host="graph.microsoft.com" port="443"/>
+	</http:request-config>
+	<idp-poc-pharmacy-110:config name="IDP___POC_Pharmacy___1_1_0_Config" doc:name="IDP - POC Pharmacy - 1.1.0 Config" doc:id="913dfc05-59b0-446e-b49c-3a922561edf7" property_host="${idp.host}" property_port="${idp.port}" property_protocol="${idp.protocol}" property_client-id="${idp.clientId}" property_client-secret="${idp.clientSecret}"/>
+</mule>
